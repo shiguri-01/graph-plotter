@@ -424,6 +424,19 @@ class GeneratePointEl:
 
 
 class GraphPlotter(inkex.Effect):
+    # stroke-widthやfont-sizeはインスタンス化した後、svg.viewport_to_unit()で変換する
+    test_style_dict={
+        "stroke": "#000000",
+        "stroke-width": "1",
+        "fill": "#000000",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "round",
+    }
+
+    # 単位変換後、inkex.Style(style_dict)でセットし直して使う
+    test_style=inkex.Style()
+
+
     def __init__(self):
         inkex.Effect.__init__(self)
 
@@ -520,6 +533,9 @@ class GraphPlotter(inkex.Effect):
         self.options.page -= 1
 
         # styles
+        # stroke-widthをドキュメントごとのユーザー単位に変換
+        __class__.test_style_dict["stroke-width"] = self.svg.viewport_to_unit("2px")
+        __class__.test_style = inkex.Style(__class__.test_style_dict)
         # TODO スタイルはそれぞれのクラスに持たせる（例えば外枠だったら太さだけ変えられるようしたい）
         fill_style = {
             # stroke_styleのオブジェクトと大きさを合わせるため、storkeはnoneにしない
