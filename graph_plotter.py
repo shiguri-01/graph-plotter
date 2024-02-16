@@ -139,7 +139,9 @@ class Axis:
         return numbers
 
     def set_numbers_style_and_position(self, text, style, pos):
-        raise NotImplementedError("サブクラスのオーバライドされたメソッドを呼び出してください。")
+        raise NotImplementedError(
+            "サブクラスのオーバライドされたメソッドを呼び出してください。"
+        )
 
     # 値から座標を求める
     def get_position(self, value: float):
@@ -317,7 +319,7 @@ class PlotData:
     def get(self):
         return self.plot_data
 
-    def get_points(self,shape_id=1):
+    def get_points(self, shape_id=1):
         points = inkex.Group()
         for point in self.plot_data:
             x_value = point[0]
@@ -366,7 +368,9 @@ class GeneratePointEl:
     ]
 
     @staticmethod
-    def get(shape_id: int, position: inkex.Vector2d, size: float):
+    def get(
+        shape_id: int, position: inkex.Vector2d, size: float, strorke_width: float = 0.5
+    ):
         if shape_id < 0 or shape_id >= len(GeneratePointEl.shpes):
             raise IndexError("指定されたshape_idのshapeは存在しません。")
         if shape_id == 0:
@@ -384,9 +388,21 @@ class GeneratePointEl:
 
         style = shape_data["style"]
         if style == "stroke":
-            point.style = inkex.Style({"stroke": "#000000", "fill": "none"})
+            point.style = inkex.Style(
+                {
+                    "stroke": "#000000",
+                    "stroke-width": str(strorke_width),
+                    "fill": "none",
+                }
+            )
         elif style == "fill":
-            point.style = inkex.Style({"stroke": "#000000", "fill": "#000000"})
+            point.style = inkex.Style(
+                {
+                    "stroke": "#000000",
+                    "stroke-width": str(strorke_width),
+                    "fill": "#000000",
+                }
+            )
 
         return point
 
@@ -421,6 +437,24 @@ class GeneratePointEl:
             )
             cross.add(line)
         return cross
+
+
+class UnitConverter:
+    svg_documet = None
+
+    # GraphPlotterインスタンスのeffectメソッド内で呼び出す
+    # ユーザー単位への変換をするときににSVGドキュメントの情報が必要
+    @staticmethod
+    def set_svg_document(svg_document):
+        __class__.svg_documet = svg_document
+
+    @staticmethod
+    def to_render_size(value: float, unit: str):
+        if __class__.svg_documet is None:
+            raise Exception(
+                "svg_documentがセットされていません。set_svg_document()でセットしてください。"
+            )
+        return __class__.svg_documet.viewport_to_unit(f"{value}{unit}")
 
 
 class GraphPlotter(inkex.Effect):
@@ -514,6 +548,9 @@ class GraphPlotter(inkex.Effect):
             target_el.addnext(new_el)
 
     def effect(self):
+        # ユーザー単位での単位変換を行うためにSVGドキュメントを渡す
+        UnitConverter.set_svg_document(self.svg)
+
         # 0から始まるように調整
         self.options.x_column -= 1
         self.options.y_column -= 1
