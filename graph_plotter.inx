@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <name>Graph Plotter</name>
+  <id>shigri.graph_plotter</id>
+  <dependency type="executable" location="inx">graph_plotter.py</dependency>
+
+  <!-- ########## -->
+  <!-- ########## -->
+
+  <param name="tab" type="notebook">
+    <page name="data_page" gui-text="データ">
+      <param name="data_text" type="string" appearance="multiline" gui-text="データ："></param>
+      <spacer size="4" />
+      <hbox>
+        <param name="row_delim" type="optiongroup" appearance="combo" gui-text="行区切り：">
+          <option value="lf">LF</option>
+          <option value="crlf">CRLF</option>
+        </param>
+        <spacer size="16" />
+        <separator />
+        <param name="col_delim" type="optiongroup" appearance="combo" gui-text="列区切り：" indent="1">
+          <!-- "\t"を直接渡してもうまくいかない -->
+          <option value="tab">tab</option>
+          <option value="space">space</option>
+        </param>
+      </hbox>
+      <spacer size="4" />
+      <label>・行頭に「#」がある場合、その行は無視されます。</label>
+    </page><!-- data_page -->
+
+
+    <page name="setting_page" gui-text="描画設定">
+      <param name="setting_tab" type="notebook">
+        <page name="x_axis_page" gui-text="x軸">
+          <hbox>
+            <vbox indent="1">
+              <param name="x_axis_min" type="float" gui-text="最小値：" min="-999999999"
+                max="999999999">0</param>
+              <param name="x_axis_max" type="float" gui-text="最大値：" min="-999999999"
+                max="999999999">100</param>
+              <param name="x_axis_reverse" type="bool" gui-text="向きを反転する">false</param>
+            </vbox>
+            <spacer size="16" />
+            <separator />
+            <vbox indent="1">
+              <param name="x_axis_placement" type="optiongroup" appearance="combo" gui-text="位置：">
+                <option value="top">上側</option>
+                <option value="bottom">下側</option>
+              </param>
+              <param name="x_axis_position" type="float" gui-text="位置調整(px)：" min="-9999" max="9999">0</param>
+            </vbox>
+          </hbox>
+          <spacer size="4" />
+
+          <label appearance="header">ラベル</label>
+          <hbox>
+            <param name='x_label_text' type='string' gui-text='テキスト：' indent='1'></param>
+            <spacer size="16" />
+            <separator />
+            <param name="x_label_position" type="float" gui-text="位置調整(px)：" indent="1" min="-9999" max="9999">0</param>
+          </hbox>
+
+          <label appearance="header">目盛り</label>
+          <hbox>
+            <vbox indent="1">
+              <label>メイン目盛り</label>
+              <param name="x_maintick_step" type="float" gui-text="間隔：" indent="1" max="999999999">10</param>
+              <param name="x_maintick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">
+                0</param>
+            </vbox>
+            <spacer size="16" />
+            <separator />
+            <vbox indent="1">
+              <label>サブ目盛り</label>
+              <param name="x_subtick_step" type="float" gui-text="間隔：" indent="1" max="999999999">0</param>
+              <param name="x_subtick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+            </vbox>
+          </hbox>
+          <spacer size="4" />
+
+          <label appearance="header">数値</label>
+          <param name="x_number_step" type="float" gui-text="間隔：" indent="1" max="999999999">50</param>
+          <param name="x_number_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+
+          <spacer size="4" />
+          <label>・「間隔*n+オフセット」の位置に目盛り・数値が作成されます</label>
+          <label>・「間隔：0.0」の場合、目盛り・数値は作成されません</label>
+        </page><!-- x_axis_page -->
+
+        <page name="y_axis_page" gui-text="y軸">
+          <hbox>
+            <vbox indent="1">
+              <param name="y_axis_min" type="float" gui-text="最小値：" min="-999999999"
+                max="999999999">0</param>
+              <param name="y_axis_max" type="float" gui-text="最大値：" min="-999999999"
+                max="999999999">100</param>
+              <param name="y_axis_reverse" type="bool" gui-text="向きを反転する">false</param>
+            </vbox>
+            <spacer size="16" />
+            <separator />
+            <vbox indent="1">
+              <param name="y_axis_placement" type="optiongroup" appearance="combo" gui-text="位置：">
+                <option value="left">左側</option>
+                <option value="right">右側</option>
+              </param>
+              <param name="y_axis_position" type="float" gui-text="位置調整(px)：" min="-9999" max="9999">0</param>
+            </vbox>
+          </hbox>
+          <spacer size="4" />
+
+          <label appearance="header">ラベル</label>
+          <hbox>
+            <param name='y_label_text' type='string' gui-text='テキスト：' indent='1'></param>
+            <spacer size="16" />
+            <separator />
+            <param name="y_label_position" type="float" gui-text="位置調整(px)：" indent="1" min="-9999" max="9999">0</param>
+          </hbox>
+
+          <label appearance="header">目盛り</label>
+          <hbox>
+            <vbox indent="1">
+              <label>メイン目盛り</label>
+              <param name="y_maintick_step" type="float" gui-text="間隔：" indent="1" max="999999999">10</param>
+              <param name="y_maintick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">
+                0</param>
+            </vbox>
+            <spacer size="16" />
+            <separator />
+            <vbox indent="1">
+              <label>サブ目盛り</label>
+              <param name="y_subtick_step" type="float" gui-text="間隔：" indent="1" max="999999999">0</param>
+              <param name="y_subtick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+            </vbox>
+          </hbox>
+          <spacer size="4" />
+
+          <label appearance="header">数値</label>
+          <param name="y_number_step" type="float" gui-text="間隔：" indent="1" max="999999999">50</param>
+          <param name="y_number_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+
+          <spacer size="4" />
+          <label>・「間隔*n+オフセット」の位置に目盛り・数値が作成されます</label>
+          <label>・「間隔：0.0」の場合、目盛り・数値は作成されません</label>
+        </page><!-- y_axis_page -->
+
+        <page name="plot_data_page" gui-text="点・線">
+          <label appearance="header">参照</label>
+          <hbox>
+            <param name="x_column" type="int" gui-text="x値 データの列：" indent="1" min="1" max="99">1</param>
+            <spacer size="16" />
+            <separator />
+            <param name="y_column" type="int" gui-text="y値 データの列：" indent="1" min="1" max="99">2</param>
+          </hbox>
+
+          <label appearance="header">点</label>
+          <param name="point_shape" type="optiongroup" appearance="combo" gui-text="形：" indent="1">
+            <option value="1">○</option>
+            <option value="2">●</option>
+            <option value="3">□</option>
+            <option value="4">■</option>
+            <option value="5">◇</option>
+            <option value="6">◆</option>
+            <option value="7">△</option>
+            <option value="8">▲</option>
+            <option value="9">▽</option>
+            <option value="10">▼</option>
+            <option value="11">X</option>
+            <option value="12">+</option>
+            <option
+              value="0">（なし）</option>
+          </param>
+          <spacer size="4" />
+
+          <label appearance="header">線</label>
+          <param name="line_type" type="optiongroup" appearance="combo" gui-text="種類：" indent="1">1 <option
+              value="1">○</option>
+            <option value="2">●</option>
+            <option value="3">□</option>
+            <option
+              value="4">■</option>
+            <option value="5">◇</option>
+            <option value="6">◆</option>
+            <option
+              value="0">（なし）</option>
+          </param>
+          <param name="line_width" type="float" gui-text="線の太さ：" indent="1">1</param>
+        </page><!--
+        plot_data_page -->
+
+        <page name="other_page" gui-text="タイトル・外枠">
+          <label appearance="header">タイトル</label>
+          <param name='title_text' type='string' gui-text='タイトル：' indent='1'></param>
+          <param name="title_placement" type="optiongroup" appearance="combo" gui-text="位置：">
+            <option value="top">上側</option>
+            <option value="bottom">下側</option>
+          </param>
+          <param name="title_position" type="float" gui-text="位置調整(px)：" min="-9999" max="9999">0</param>
+          <spacer size="4" />
+
+          <label appearance="header">外枠</label>
+          <hbox>
+            <param name="frame_top" type="bool" gui-text="上" indent="1">true</param>
+            <spacer size="16" />
+            <separator />
+            <param name="frame_bottom" type="bool" gui-text="下" indent="1">true</param>
+            <spacer size="16" />
+            <separator />
+            <param name="frame_left" type="bool" gui-text="左" indent="1">true</param>
+            <spacer size="16" />
+            <separator />
+            <param name="frame_right" type="bool" gui-text="右" indent="1">true</param>
+          </hbox>
+        </page><!-- other_page -->
+      </param><!-- setting_tab -->
+      <spacer size="4" />
+      <hbox >
+        <label>描画する項目：</label>
+        <param name="render_x_axis" type="bool" gui-text="x軸" indent="1">true</param>
+        <spacer size="16" />
+        <separator />
+        <param name="render_y_axis" type="bool" gui-text="y軸" indent="1">true</param>
+        <spacer size="16" />
+        <separator />
+        <param name="render_plot_data" type="bool" gui-text="点・線" indent="1">true</param>
+        <spacer size="16" />
+        <separator />
+        <param name="render_other" type="bool" gui-text="タイトル・外枠" indent="1">true</param>
+      </hbox>
+      <param name="page" type="int" gui-text="描画するページの番号：" min="1" max="99">1</param>
+    </page><!-- setting_page -->
+  </param>
+
+
+  <!-- ########## -->
+  <!-- ########## -->
+
+
+  <effect>
+    <object-type>all</object-type>
+    <effects-menu>
+      <submenu name="Render"/>
+    </effects-menu>
+  </effect>
+
+  <script>
+    <command location="inx" interpreter="python">graph_plotter.py</command>
+  </script>
+</inkscape-extension>
