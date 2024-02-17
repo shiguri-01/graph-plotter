@@ -182,14 +182,14 @@ class XAxis(Axis):
         direction = self.placement * reverse_dir
         return super().get_ticks(step, offset, size, stroke_width, direction)
 
-    def set_numbers_style_and_position(self, text, style, pos):
+    def set_numbers_style_and_position(self, text_el, style, pos):
         style["text-anchor"] = "middle"
         style["text-align"] = "center"
-        text.style = style
+        text_el.style = style
         if self.placement == self.placements["top"]:
-            text.set_position(pos.x, pos.y - float(style["font-size"]) * 0.6)
+            text_el.set_position(pos.x, pos.y - float(style["font-size"]) * 0.6)
         else:
-            text.set_position(pos.x, pos.y + float(style["font-size"]) * 0.9)
+            text_el.set_position(pos.x, pos.y + float(style["font-size"]) * 0.9)
 
     # ラベルを生成
     def get_label(self, text: str, position: float, style: inkex.Style):
@@ -235,17 +235,17 @@ class YAxis(Axis):
         direction = self.placement * reverse_dir
         return super().get_ticks(step, offset, size, stroke_width, direction)
 
-    def set_numbers_style_and_position(self, text, style, pos):
+    def set_numbers_style_and_position(self, text_el, style, pos):
         if self.placement == self.placements["left"]:
             style["text-anchor"] = "end"
             style["text-align"] = "right"
-            text.style = style
-            text.set_position(pos.x - float(style["font-size"]) * 0.4, pos.y)
+            text_el.style = style
+            text_el.set_position(pos.x - float(style["font-size"]) * 0.4, pos.y)
         else:
             style["text-anchor"] = "start"
             style["text-align"] = "left"
-            text.style = style
-            text.set_position(pos.x + float(style["font-size"]) * 0.4, pos.y)
+            text_el.style = style
+            text_el.set_position(pos.x + float(style["font-size"]) * 0.4, pos.y)
 
     # ラベルを生成
     def get_label(self, text: str, position: float, style: inkex.Style):
@@ -430,9 +430,39 @@ class GraphPlotter(inkex.Effect):
         "stroke-linecap": "butt",
         "stroke-linejoin": "round",
     }
+    base_text_style_dict={
+        "font-size": "1",
+        "font-family": "Arial",
+        "font-weight": "normal",
+        "font-style": "normal",
+        "text-align": "center",
+        "text-anchor": "middle",
+        "fill": "#000000",
+        "stroke": "none",
+        "stroke-width": "none",
+    }
+    base_fill_style_dict={
+        "fill": "#000000",
+        "stroke": "#000000",
+        "stroke-width": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "round",
+    }
+    base_stroke_style_dict={
+        "fill": "none",
+        "stroke": "#000000",
+        "stroke-width": "1",
+        "stroke-linecap": "butt",
+        "stroke-linejoin": "round",
+    }
+
 
     # 単位変換後、inkex.Style(style_dict)でセットし直して使う
     test_style=inkex.Style()
+    base_text_style=inkex.Style()
+    base_fill_style=inkex.Style()
+    base_stroke_style=inkex.Style()
+
 
 
     def __init__(self):
@@ -531,25 +561,16 @@ class GraphPlotter(inkex.Effect):
         self.options.page -= 1
 
         # styles
-        # stroke-widthをドキュメントごとのユーザー単位に変換
-        __class__.test_style_dict["stroke-width"] = self.svg.viewport_to_unit("2px")
-        __class__.test_style = inkex.Style(__class__.test_style_dict)
+        # 単位をドキュメントごとのユーザー単位に変換
+        __class__.base_text_style["font-size"] = self.svg.viewport_to_unit("20pt")
+        __class__.base_fill_style_dict["stroke-width"] = self.svg.viewport_to_unit("2px")
+        __class__.base_stroke_style_dict["stroke-width"] = self.svg.viewport_to_unit("2px")
+        # インスタンス化
+        __class__.base_text_style = inkex.Style(__class__.base_text_style_dict)
+        __class__.base_fill_style = inkex.Style(__class__.base_fill_style_dict)
+        __class__.base_stroke_style = inkex.Style(__class__.base_stroke_style_dict)
+
         # TODO スタイルはそれぞれのクラスに持たせる（例えば外枠だったら太さだけ変えられるようしたい）
-        fill_style = {
-            # stroke_styleのオブジェクトと大きさを合わせるため、storkeはnoneにしない
-            "stroke": "#000000",
-            "stroke-width": str(self.svg.viewport_to_unit("2px")),
-            "fill": "#000000",
-            "stroke-linecap": "butt",
-            "stroke-linejoin": "round",
-        }
-        stroke_style = {
-            "stroke": "#000000",
-            "stroke-width": str(self.svg.viewport_to_unit("2px")),
-            "fill": "none",
-            "stroke-linecap": "butt",
-            "stroke-linejoin": "round",
-        }
         text_style = {
             "font-size": str(self.svg.viewport_to_unit("20pt")),
             "font-family": "Arial",
@@ -589,6 +610,9 @@ class GraphPlotter(inkex.Effect):
             parent_group.set_id(make_id("graph"))
         layer.add(parent_group)
 
+        frame_style=__class__.base_stroke_style.copy()
+        frame_style["stroke-linecap"] = "square"
+
         # render other
         if self.options.render_other:
             if self.options.title_text:
@@ -601,7 +625,7 @@ class GraphPlotter(inkex.Effect):
                     y = bbox.top - title_position
                 title = TextElement()
                 title.text = self.options.title_text
-                title.style = inkex.Style(text_style)
+                title.style = __class__.base_text_style
                 title.set_position(center.x, y)
                 title.set_id(make_id("title"))
                 parent_group.add(title)
@@ -615,14 +639,6 @@ class GraphPlotter(inkex.Effect):
                 frame_group = inkex.Group()
                 frame_group.set_id(make_id("frames"))
 
-                style=inkex.Style(
-                    {
-                        "stroke": "#000000",
-                        "stroke-width": str(self.svg.viewport_to_unit("2px")),
-                        "fill": "none",
-                        "stroke-linecap": "square",
-                    }
-                )
                 if self.options.frame_top:
                     line = inkex.Line(
                         x1=str(bbox.left),
@@ -630,7 +646,7 @@ class GraphPlotter(inkex.Effect):
                         x2=str(bbox.right),
                         y2=str(bbox.top),
                     )
-                    line.style = style
+                    line.style = frame_style
                     line.set_id(make_id("top"))
                     frame_group.add(line)
                 if self.options.frame_bottom:
@@ -640,7 +656,7 @@ class GraphPlotter(inkex.Effect):
                         x2=str(bbox.right),
                         y2=str(bbox.bottom),
                     )
-                    line.style = style
+                    line.style = frame_style
                     line.set_id(make_id("bottom"))
                     frame_group.add(line)
                 if self.options.frame_left:
@@ -650,7 +666,7 @@ class GraphPlotter(inkex.Effect):
                         x2=str(bbox.left),
                         y2=str(bbox.bottom),
                     )
-                    line.style = style
+                    line.style = frame_style
                     line.set_id(make_id("left"))
                     frame_group.add(line)
                 if self.options.frame_right:
@@ -660,7 +676,7 @@ class GraphPlotter(inkex.Effect):
                         x2=str(bbox.right),
                         y2=str(bbox.bottom),
                     )
-                    line.style = style
+                    line.style = frame_style
                     line.set_id(make_id("right"))
                     frame_group.add(line)
 
@@ -717,7 +733,7 @@ class GraphPlotter(inkex.Effect):
                     x2=str(x_axis.end.x),
                     y2=str(x_axis.end.y),
                 )
-                # TODO 後でいい感じのスタイルにする
+                line.style = frame_style
                 axis_group.add(line)
             if self.options.x_number_step > 0:
                 numbers = x_axis.get_numbers(
@@ -776,7 +792,7 @@ class GraphPlotter(inkex.Effect):
                     x2=str(y_axis.end.x),
                     y2=str(y_axis.end.y),
                 )
-                # TODO 後でいい感じのスタイルにする
+                line.style=frame_style
                 axis_group.add(line)
             if self.options.y_number_step > 0:
                 numbers = y_axis.get_numbers(
