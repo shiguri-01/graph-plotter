@@ -30,18 +30,6 @@ def normalize(v: np.ndarray):
     return v / np.linalg.norm(v)
 
 
-# 有効な要素が2つ以上あるか
-# グループ化するかどうかの判定に使う
-def has_multiple_valid_elements(*args):
-    count = 0
-    for arg in args:
-        if arg:
-            count += 1
-            if count >= 2:
-                return True
-    return False
-
-
 # idを生成
 # セットしようとしたidが重複しているとランダムなidにされてしまうので、その対策
 def make_id(id_str: str):
@@ -532,8 +520,8 @@ class GraphPlotter(inkex.Effect):
         self.arg_parser.add_argument("--title_text", type=str, default="")
         self.arg_parser.add_argument("--title_placement", type=str, default="bottom")
         self.arg_parser.add_argument("--title_position", type=float, default="0")
-        self.arg_parser.add_argument("--frame_top", type=inkex.Boolean, default="True")
         # フレーム
+        self.arg_parser.add_argument("--frame_top", type=inkex.Boolean, default="True")
         self.arg_parser.add_argument(
             "--frame_bottom", type=inkex.Boolean, default="True"
         )
@@ -556,16 +544,6 @@ class GraphPlotter(inkex.Effect):
         )
         # 描画ページ
         self.arg_parser.add_argument("--page", type=int, default="1")
-
-    def add_element(self, target_el, new_el):
-        if isinstance(target_el, inkex.elements._svg.SvgDocumentElement):
-            target_el.append(new_el)
-        elif isinstance(
-            target_el, (inkex.elements._groups.Group, inkex.elements._groups.Layer)
-        ):
-            target_el.add(new_el)
-        else:
-            target_el.addnext(new_el)
 
     def effect(self):
         # ユーザー単位での単位変換を行うためにSVGドキュメントを渡す
@@ -692,7 +670,7 @@ class GraphPlotter(inkex.Effect):
                     line.set_id(make_id("right"))
                     frame_group.add(line)
 
-                    parent_group.add(frame_group)
+                parent_group.add(frame_group)
 
         maintick_size = self.svg.viewport_to_unit("16px")
         subtick_size = self.svg.viewport_to_unit("10px")
