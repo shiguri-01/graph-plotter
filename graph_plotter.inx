@@ -11,19 +11,11 @@
     <page name="data_page" gui-text="データ">
       <param name="data_text" type="string" appearance="multiline" gui-text="データ："></param>
       <spacer size="4" />
-      <hbox>
-        <param name="row_delim" type="optiongroup" appearance="combo" gui-text="行区切り：">
-          <option value="lf">LF</option>
-          <option value="crlf">CRLF</option>
-        </param>
-        <spacer size="16" />
-        <separator />
-        <param name="col_delim" type="optiongroup" appearance="combo" gui-text="列区切り：" indent="1">
+        <param name="col_delim" type="optiongroup" appearance="combo" gui-text="区切り：" indent="1">
           <!-- "\t"を直接渡してもうまくいかない -->
           <option value="tab">tab</option>
           <option value="space">space</option>
         </param>
-      </hbox>
       <spacer size="4" />
       <label>・行頭に「#」がある場合、その行は無視されます。</label>
     </page><!-- data_page -->
