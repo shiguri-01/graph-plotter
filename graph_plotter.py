@@ -560,19 +560,6 @@ class GraphPlotter(inkex.Effect):
         __class__.base_fill_style["stroke-width"] = self.svg.viewport_to_unit("2px")
         __class__.base_stroke_style["stroke-width"] = self.svg.viewport_to_unit("2px")
 
-        # TODO スタイルはそれぞれのクラスに持たせる（例えば外枠だったら太さだけ変えられるようしたい）
-        text_style = {
-            "font-size": str(self.svg.viewport_to_unit("20pt")),
-            "font-family": "Arial",
-            "font-weight": "normal",
-            "font-style": "normal",
-            "text-align": "center",
-            "text-anchor": "middle",
-            "stroke": "none",
-            "stroke-width": "none",
-            "fill": "#000000",
-        }
-
         # レンダーする場所の取得とか
         page_bbox = None
         try:
