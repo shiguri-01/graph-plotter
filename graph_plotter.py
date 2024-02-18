@@ -310,7 +310,7 @@ class PlotData:
     def get(self):
         return self.plot_data
 
-    def get_points(self, shape_id=1):
+    def get_points(self, shape_id:int=1,size: float = 2, stroke_width: float = 0.5):
         points = inkex.Group()
         for point_data in self.plot_data:
             x_value = point_data[0]
@@ -327,7 +327,10 @@ class PlotData:
             pos_y = self.y_axis.get_y(y_value)
 
             point_element = GeneratePointEl.get(
-                shape_id, inkex.Vector2d(pos_x, pos_y), 2
+                shape_id,
+                position=inkex.Vector2d(pos_x, pos_y),
+                size=size,
+                stroke_width=stroke_width
             )
             points.add(point_element)
         return points
@@ -352,7 +355,7 @@ class GeneratePointEl:
 
     @staticmethod
     def get(
-        shape_id: int, position: inkex.Vector2d, size: float, strorke_width: float = 0.5
+        shape_id: int, position: inkex.Vector2d, size: float, stroke_width: float
     ):
         if shape_id < 0 or shape_id >= len(GeneratePointEl.shpes):
             raise IndexError("指定されたshape_idのshapeは存在しません。")
@@ -372,8 +375,10 @@ class GeneratePointEl:
         style = shape_data["style"]
         if style == "stroke":
             point.style = GraphPlotter.base_stroke_style.copy()
+            point.style["fill"] = "#ffffff"
         elif style == "fill":
             point.style = GraphPlotter.base_fill_style.copy()
+        point.style["stroke-width"] = str(stroke_width)
 
         return point
 
@@ -454,7 +459,7 @@ class GraphPlotter(inkex.Effect):
             "stroke": "#000000",
             "stroke-width": "1",
             "stroke-linecap": "butt",
-            "stroke-linejoin": "round",
+            "stroke-linejoin": "miter",
         }
     )
     base_stroke_style = inkex.Style(
@@ -463,7 +468,7 @@ class GraphPlotter(inkex.Effect):
             "stroke": "#000000",
             "stroke-width": "1",
             "stroke-linecap": "butt",
-            "stroke-linejoin": "round",
+            "stroke-linejoin": "miter",
         }
     )
 
@@ -514,6 +519,8 @@ class GraphPlotter(inkex.Effect):
         self.arg_parser.add_argument("--x_column", type=int, default="1")
         self.arg_parser.add_argument("--y_column", type=int, default="2")
         self.arg_parser.add_argument("--point_shape", type=int, default="1")
+        self.arg_parser.add_argument("--point_size", type=float, default="2")
+        self.arg_parser.add_argument("--point_stroke_width", type=float, default="0.5")
         self.arg_parser.add_argument("--line_type", type=int, default="0")
         self.arg_parser.add_argument("--line_width", type=float, default="0")
         # タイトル
@@ -789,7 +796,11 @@ class GraphPlotter(inkex.Effect):
                 y_axis,
             )
             if self.options.point_shape > 0:
-                points = plot_data.get_points(self.options.point_shape)
+                points = plot_data.get_points(
+                    self.options.point_shape,
+                    size=self.options.point_size,
+                    stroke_width=self.options.point_stroke_width
+                )
                 points.set_id(make_id("points"))
                 parent_group.add(points)
 

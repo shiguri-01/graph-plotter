@@ -145,7 +145,7 @@
           </hbox>
 
           <label appearance="header">点</label>
-          <param name="point_shape" type="optiongroup" appearance="combo" gui-text="形：" indent="1">
+          <param name="point_shape" type="optiongroup" appearance="combo" gui-text="種類：" indent="1">
             <option value="1">○</option>
             <option value="2">●</option>
             <option value="3">□</option>
@@ -158,24 +158,18 @@
             <option value="10">▼</option>
             <option value="11">X</option>
             <option value="12">+</option>
-            <option
-              value="0">（なし）</option>
+            <option value="0">（なし）</option>
           </param>
+          <param name="point_size" type="float" gui-text="大きさ(px)：" indent="1" min="0" max="99">2</param>
+          <param name="point_stroke_width" type="float" gui-text="ストローク幅(px)：" indent="1" min="0" max="99">0.5</param>
           <spacer size="4" />
 
           <label appearance="header">線</label>
-          <param name="line_type" type="optiongroup" appearance="combo" gui-text="種類：" indent="1">1 <option
-              value="1">○</option>
-            <option value="2">●</option>
-            <option value="3">□</option>
-            <option
-              value="4">■</option>
-            <option value="5">◇</option>
-            <option value="6">◆</option>
-            <option
-              value="0">（なし）</option>
+          <param name="line_type" type="optiongroup" appearance="combo" gui-text="種類：" indent="1">
+            <option value="1">最小二乗法</option>
+            <option value="0">（なし）</option>
           </param>
-          <param name="line_width" type="float" gui-text="線の太さ：" indent="1">1</param>
+          <param name="line_width" type="float" gui-text="ストローク幅(px)：" indent="1">1</param>
         </page><!--
         plot_data_page -->
 
