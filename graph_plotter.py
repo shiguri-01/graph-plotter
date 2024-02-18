@@ -90,13 +90,11 @@ class Axis:
         step: float,
         offset: float,
         size: float,
-        stroke_width: float,
         direction: int = 1,
     ):
         tick_values = self.get_tick_values(step, offset)
         ticks = inkex.Group()
         style = GraphPlotter.base_stroke_style.copy()
-        style["stroke-width"] = str(stroke_width)
         for tick_value in tick_values:
             # 目盛り線の始点位置ベクトル
             tick_start_v = self.get_position(tick_value)
@@ -158,12 +156,12 @@ class XAxis(Axis):
         self.placement = self.placements[plasement]
 
     # 目盛りを生成
-    def get_ticks(self, step: float, offset: float, size: float, stroke_width: float):
+    def get_ticks(self, step: float, offset: float, size: float):
         reverse_dir = (
             1 if self.vector[0] > 0 else -1
         )  # x軸の向きによって目盛りの向きを変える
         direction = self.placement * reverse_dir
-        return super().get_ticks(step, offset, size, stroke_width, direction)
+        return super().get_ticks(step, offset, size, direction)
 
     def set_numbers_style_and_position(self, text_el, pos):
         style = GraphPlotter.base_text_style.copy()
@@ -212,12 +210,12 @@ class YAxis(Axis):
         self.placement = self.placements[plasement]
 
     # 目盛りを生成
-    def get_ticks(self, step: float, offset: float, size: float, stroke_width: float):
+    def get_ticks(self, step: float, offset: float, size: float):
         reverse_dir = (
             1 if self.vector[1] < 0 else -1
         )  # y軸の向きによって目盛りの向きを変える
         direction = self.placement * reverse_dir
-        return super().get_ticks(step, offset, size, stroke_width, direction)
+        return super().get_ticks(step, offset, size, direction)
 
     def set_numbers_style_and_position(self, text_el, pos):
         style = GraphPlotter.base_text_style.copy()
@@ -522,7 +520,7 @@ class GraphPlotter(inkex.Effect):
         self.arg_parser.add_argument("--point_size", type=float, default="2")
         self.arg_parser.add_argument("--point_stroke_width", type=float, default="0.5")
         self.arg_parser.add_argument("--line_type", type=int, default="0")
-        self.arg_parser.add_argument("--line_width", type=float, default="0")
+        self.arg_parser.add_argument("--line_stroke_width", type=float, default="0")
         # タイトル
         self.arg_parser.add_argument("--title_text", type=str, default="")
         self.arg_parser.add_argument("--title_placement", type=str, default="bottom")
@@ -536,6 +534,16 @@ class GraphPlotter(inkex.Effect):
         self.arg_parser.add_argument(
             "--frame_right", type=inkex.Boolean, default="True"
         )
+        # 詳細設定
+        self.arg_parser.add_argument("--graph_width", type=float, default="400")
+        self.arg_parser.add_argument("--graph_height", type=float, default="400")
+        self.arg_parser.add_argument("--base_storoke_width", type=float, default="2")
+        self.arg_parser.add_argument("--maintick_size", type=float, default="12")
+        self.arg_parser.add_argument("--subtick_size", type=float, default="6")
+        self.arg_parser.add_argument("--font_family", type=str, default="Arial")
+        self.arg_parser.add_argument("--title_font_size", type=float, default="20")
+        self.arg_parser.add_argument("--axis_label_font_size", type=float, default="20")
+        self.arg_parser.add_argument("--axis_number_font_size", type=float, default="20")
         # 描画項目
         self.arg_parser.add_argument(
             "--render_x_axis", type=inkex.Boolean, default="True"
@@ -562,29 +570,37 @@ class GraphPlotter(inkex.Effect):
         self.options.page -= 1
 
         # 基本スタイル
+        # フォントファミリーをいい感じにする
+        font_family=self.options.font_family
+        font_family.strip()
+        if len(font_family)!=0:
+            if font_family[-1]!=",": font_family+=","
+        font_family+="sans-serif"
+        self.debug(font_family)
+        __class__.base_text_style["font-family"] = font_family
         # 単位をドキュメントごとのユーザー単位に変換
         __class__.base_text_style["font-size"] = self.svg.viewport_to_unit("20pt")
-        __class__.base_fill_style["stroke-width"] = self.svg.viewport_to_unit("2px")
-        __class__.base_stroke_style["stroke-width"] = self.svg.viewport_to_unit("2px")
+        __class__.base_fill_style["stroke-width"] = self.svg.viewport_to_unit(f"{self.options.base_storoke_width}px")
+        __class__.base_stroke_style["stroke-width"] = self.svg.viewport_to_unit(f"{self.options.base_storoke_width}px")
 
-        # レンダーする場所の取得とか
+        # レンダーするページを取得
         page_bbox = None
         try:
             page_bbox = self.svg.get_page_bbox(self.options.page)
         except IndexError:
-            self.debug(
+            raise inkex.AbortExtension(
                 "エラー: ページが見つかりません。ページの番号を確認してください。ページの番号は1から始まります。"
             )
-            return
         center = inkex.Vector2d(page_bbox.center_x, page_bbox.center_y)
-        size = self.svg.viewport_to_unit("400px")
 
         # グラフの描画領域にBoundingBoxを設定
+        graph_width = self.svg.viewport_to_unit(f"{self.options.graph_width}px")
+        graph_height = self.svg.viewport_to_unit(f"{self.options.graph_height}px")
         bbox = inkex.Rectangle(
-            x=str(center.x - size / 2),
-            y=str(center.y - size / 2),
-            width=str(size),
-            height=str(size),
+            x=str(center.x - graph_width / 2),
+            y=str(center.y - graph_height / 2),
+            width=str(graph_width),
+            height=str(graph_height),
         ).bounding_box()
         layer = self.svg.get_current_layer()
         parent_group = inkex.Group()
@@ -666,8 +682,8 @@ class GraphPlotter(inkex.Effect):
 
                 parent_group.add(frame_group)
 
-        maintick_size = self.svg.viewport_to_unit("16px")
-        subtick_size = self.svg.viewport_to_unit("10px")
+        maintick_size = self.svg.viewport_to_unit(f"{self.options.maintick_size}px")
+        subtick_size = self.svg.viewport_to_unit(f"{self.options.subtick_size}px")
 
         # render x axis
         x_axis_position = self.svg.viewport_to_unit(f"{self.options.x_axis_position}px")
@@ -697,7 +713,6 @@ class GraphPlotter(inkex.Effect):
                     step=self.options.x_maintick_step,
                     offset=self.options.x_maintick_offset,
                     size=maintick_size,
-                    stroke_width=self.svg.viewport_to_unit("2px"),
                 )
                 ticks.set_id(make_id("mainticks"))
                 axis_group.add(ticks)
@@ -706,7 +721,6 @@ class GraphPlotter(inkex.Effect):
                     self.options.x_subtick_step,
                     self.options.x_subtick_offset,
                     size=subtick_size,
-                    stroke_width=self.svg.viewport_to_unit("2px"),
                 )
                 ticks.set_id(make_id("subticks"))
                 axis_group.add(ticks)
@@ -754,7 +768,6 @@ class GraphPlotter(inkex.Effect):
                     step=self.options.y_maintick_step,
                     offset=self.options.y_maintick_offset,
                     size=maintick_size,
-                    stroke_width=self.svg.viewport_to_unit("2px"),
                 )
                 axis_group.add(ticks)
                 ticks.set_id(make_id("mainticks"))
@@ -763,7 +776,6 @@ class GraphPlotter(inkex.Effect):
                     step=self.options.y_subtick_step,
                     offset=self.options.y_subtick_offset,
                     size=subtick_size,
-                    stroke_width=self.svg.viewport_to_unit("2px"),
                 )
                 ticks.set_id(make_id("subticks"))
                 axis_group.add(ticks)
