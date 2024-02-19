@@ -11,11 +11,11 @@
     <page name="data_page" gui-text="データ">
       <param name="data_text" type="string" appearance="multiline" gui-text="データ："></param>
       <spacer size="4" />
-        <param name="col_delim" type="optiongroup" appearance="combo" gui-text="区切り：" indent="1">
-          <!-- "\t"を直接渡してもうまくいかない -->
-          <option value="tab">tab</option>
-          <option value="space">space</option>
-        </param>
+      <param name="col_delim" type="optiongroup" appearance="combo" gui-text="区切り：" indent="1">
+        <!-- "\t"を直接渡してもうまくいかない -->
+        <option value="tab">tab</option>
+        <option value="space">space</option>
+      </param>
       <spacer size="4" />
       <label>・行頭に「#」がある場合、その行は無視されます。</label>
     </page><!-- data_page -->
@@ -39,7 +39,8 @@
                 <option value="top">上側</option>
                 <option value="bottom">下側</option>
               </param>
-              <param name="x_axis_position" type="float" gui-text="位置調整(px)：" min="-9999" max="9999">0</param>
+              <param name="x_axis_position" type="float" gui-text="位置調整(px)：" min="-9999" max="9999">
+                0</param>
             </vbox>
           </hbox>
           <spacer size="4" />
@@ -49,15 +50,18 @@
             <param name='x_label_text' type='string' gui-text='テキスト：' indent='1'></param>
             <spacer size="16" />
             <separator />
-            <param name="x_label_position" type="float" gui-text="位置調整(px)：" indent="1" min="-9999" max="9999">0</param>
+            <param name="x_label_position" type="float" gui-text="位置調整(px)：" indent="1" min="-9999"
+              max="9999">0</param>
           </hbox>
 
           <label appearance="header">目盛り</label>
           <hbox>
             <vbox indent="1">
               <label>メイン目盛り</label>
-              <param name="x_maintick_step" type="float" gui-text="間隔：" indent="1" max="999999999">10</param>
-              <param name="x_maintick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">
+              <param name="x_maintick_step" type="float" gui-text="間隔：" indent="1" max="999999999">
+                10</param>
+              <param name="x_maintick_offset" type="float" gui-text="オフセット：" indent="1"
+                min="-999999999" max="999999999">
                 0</param>
             </vbox>
             <spacer size="16" />
@@ -65,14 +69,16 @@
             <vbox indent="1">
               <label>サブ目盛り</label>
               <param name="x_subtick_step" type="float" gui-text="間隔：" indent="1" max="999999999">0</param>
-              <param name="x_subtick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+              <param name="x_subtick_offset" type="float" gui-text="オフセット：" indent="1"
+                min="-999999999" max="999999999">0</param>
             </vbox>
           </hbox>
           <spacer size="4" />
 
           <label appearance="header">数値</label>
           <param name="x_number_step" type="float" gui-text="間隔：" indent="1" max="999999999">50</param>
-          <param name="x_number_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+          <param name="x_number_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999"
+            max="999999999">0</param>
 
           <spacer size="4" />
           <label>・「間隔*n+オフセット」の位置に目盛り・数値が作成されます</label>
@@ -95,7 +101,8 @@
                 <option value="left">左側</option>
                 <option value="right">右側</option>
               </param>
-              <param name="y_axis_position" type="float" gui-text="位置調整(px)：" min="-9999" max="9999">0</param>
+              <param name="y_axis_position" type="float" gui-text="位置調整(px)：" min="-9999" max="9999">
+                0</param>
             </vbox>
           </hbox>
           <spacer size="4" />
@@ -105,15 +112,18 @@
             <param name='y_label_text' type='string' gui-text='テキスト：' indent='1'></param>
             <spacer size="16" />
             <separator />
-            <param name="y_label_position" type="float" gui-text="位置調整(px)：" indent="1" min="-9999" max="9999">0</param>
+            <param name="y_label_position" type="float" gui-text="位置調整(px)：" indent="1" min="-9999"
+              max="9999">0</param>
           </hbox>
 
           <label appearance="header">目盛り</label>
           <hbox>
             <vbox indent="1">
               <label>メイン目盛り</label>
-              <param name="y_maintick_step" type="float" gui-text="間隔：" indent="1" max="999999999">10</param>
-              <param name="y_maintick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">
+              <param name="y_maintick_step" type="float" gui-text="間隔：" indent="1" max="999999999">
+                10</param>
+              <param name="y_maintick_offset" type="float" gui-text="オフセット：" indent="1"
+                min="-999999999" max="999999999">
                 0</param>
             </vbox>
             <spacer size="16" />
@@ -121,14 +131,16 @@
             <vbox indent="1">
               <label>サブ目盛り</label>
               <param name="y_subtick_step" type="float" gui-text="間隔：" indent="1" max="999999999">0</param>
-              <param name="y_subtick_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+              <param name="y_subtick_offset" type="float" gui-text="オフセット：" indent="1"
+                min="-999999999" max="999999999">0</param>
             </vbox>
           </hbox>
           <spacer size="4" />
 
           <label appearance="header">数値</label>
           <param name="y_number_step" type="float" gui-text="間隔：" indent="1" max="999999999">50</param>
-          <param name="y_number_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999" max="999999999">0</param>
+          <param name="y_number_offset" type="float" gui-text="オフセット：" indent="1" min="-999999999"
+            max="999999999">0</param>
 
           <spacer size="4" />
           <label>・「間隔*n+オフセット」の位置に目盛り・数値が作成されます</label>
@@ -161,7 +173,8 @@
             <option value="0">（なし）</option>
           </param>
           <param name="point_size" type="float" gui-text="大きさ(px)：" indent="1" min="0" max="99">2</param>
-          <param name="point_stroke_width" type="float" gui-text="ストローク幅(px)：" min="0.1" max="99" indent="1">0.5</param>
+          <param name="point_stroke_width" type="float" gui-text="ストローク幅(px)：" min="0.1" max="99"
+            indent="1">0.5</param>
           <spacer size="4" />
 
           <label appearance="header">線</label>
@@ -169,18 +182,21 @@
             <option value="1">最小二乗法</option>
             <option value="0">（なし）</option>
           </param>
-          <param name="line_stroke_width" type="float" gui-text="ストローク幅(px)：" min="0.1" max="99" indent="1">1</param>
+          <param name="line_stroke_width" type="float" gui-text="ストローク幅(px)：" min="0.1" max="99"
+            indent="1">1</param>
         </page><!--
         plot_data_page -->
 
         <page name="other_page" gui-text="タイトル・外枠">
           <label appearance="header">タイトル</label>
           <param name='title_text' type='string' gui-text='タイトル：' indent='1'></param>
-          <param name="title_placement" type="optiongroup" appearance="combo" gui-text="位置：" indent='1'>
+          <param name="title_placement" type="optiongroup" appearance="combo" gui-text="位置："
+            indent='1'>
             <option value="top">上側</option>
             <option value="bottom">下側</option>
           </param>
-          <param name="title_position" type="float" gui-text="位置調整(px)：" indent='1' min="-9999" max="9999">0</param>
+          <param name="title_position" type="float" gui-text="位置調整(px)：" indent='1' min="-9999"
+            max="9999">0</param>
           <spacer size="4" />
 
           <label appearance="header">外枠</label>
@@ -196,30 +212,55 @@
             <separator />
             <param name="frame_right" type="bool" gui-text="右" indent="1">true</param>
           </hbox>
-        </page><!-- other_page -->
+        </page><!--
+        other_page -->
 
         <page name="advanced_setting_page" gui-text="詳細設定">
           <hbox>
-          <param name="graph_width" type="float" gui-text="グラフの幅(px)：" min="1" max="9999">400</param>
-          <spacer size="16" />
-          <separator />
-          <param name="graph_height" type="float" gui-text="グラフの高さ(px)：" min="1" max="9999" indent="1">400</param>
+            <param name="graph_width" type="float" gui-text="グラフの幅(px)：" min="1" max="9999">400</param>
+            <spacer size="16" />
+            <separator />
+            <param name="graph_height" type="float" gui-text="グラフの高さ(px)：" min="1" max="9999"
+              indent="1">400</param>
           </hbox>
           <spacer size="12" />
-          <param name="base_storoke_width" type="float" gui-text="目盛り・外枠のストローク幅(px)：" min="0.1" max="99">2</param>
+          <param name="base_storoke_width" type="float" gui-text="目盛り・外枠のストローク幅(px)：" min="0.1"
+            max="99">2</param>
           <spacer size="12" />
           <param name="maintick_size" type="float" gui-text="メイン目盛りの長さ(px)：" min="0.1" max="99">12</param>
           <param name="subtick_size" type="float" gui-text="サブ目盛りの長さ(px)：" min="0.1" max="99">6</param>
           <spacer size="12" />
-          <param name="font_family" type="string" gui-text="フォントファミリー：" indent="1">Arial</param>
-          <param name="title_font_size" type="float" gui-text="タイトルのフォントサイズ(pt)" min="0.1" max="99" indent="1">20</param>
-          <param name="axis_label_font_size" type="float" gui-text="軸ラベルのフォントサイズ(pt)" min="0.1" max="99" indent="1">20</param>
-          <param name="axis_number_font_size" type="float" gui-text="軸数値のフォントサイズ(pt)" min="0.1" max="99" indent="1">20</param>
-        </page><!-- advanced_setting_page -->
-      </param><!-- setting_tab -->
+          <param name="font_family" type="string" gui-text="フォントファミリー：">Arial</param>
+          <label>フォントサイズ</label>
+          <hbox>
+            <vbox indent="1">
+              <param name="root_font_size" type="float" gui-text="ルート(pt)：" min="0.1" max="99">20</param>
+              <spacer size="expand" />
+            </vbox>
+            <spacer size="16" />
+            <separator />
+            <vbox indent="1">
+              <param name="title_font_size" type="float" gui-text="タイトル(rem)：" min="0.1" max="99">1</param>
+              <param name="axis_label_font_size" type="float" gui-text="軸ラベル(rem)：" min="0.1" max="99">1</param>
+              <param name="axis_number_font_size" type="float" gui-text="軸数値(rem)：" min="0.1" max="99">1</param>
+            </vbox>
+          </hbox>
+
+          <spacer size="12" />
+          <hbox>
+            <vbox>
+              <param name="render_for_same_id_group" type="bool" gui-text="">true</param>
+              <spacer size="expand"/>
+            </vbox>
+            <label>タイトルのテキストとIDが一致するグループがある場合、<br />そのグループの子要素としてグラフを描画する</label>
+          </hbox>
+        </page><!--
+        advanced_setting_page -->
+      </param><!--
+      setting_tab -->
       <spacer size="4" />
 
-      <hbox >
+      <hbox>
         <label>描画する項目：</label>
         <param name="render_x_axis" type="bool" gui-text="x軸" indent="1">true</param>
         <spacer size="16" />
@@ -233,7 +274,8 @@
         <param name="render_other" type="bool" gui-text="タイトル・外枠" indent="1">true</param>
       </hbox>
       <param name="page" type="int" gui-text="描画するページの番号：" min="1" max="99">1</param>
-    </page><!-- setting_page -->
+    </page><!--
+    setting_page -->
   </param>
 
 
@@ -244,7 +286,7 @@
   <effect>
     <object-type>all</object-type>
     <effects-menu>
-      <submenu name="Render"/>
+      <submenu name="Render" />
     </effects-menu>
   </effect>
 
